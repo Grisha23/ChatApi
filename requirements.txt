@@ -1,0 +1,5 @@
+Django==2.1.5
+django-unixtimestampfield==0.3.9
+gunicorn==19.9.0
+mysqlclient==1.4.1
+pytz==2018.9
