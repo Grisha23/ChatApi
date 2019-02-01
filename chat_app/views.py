@@ -49,11 +49,9 @@ def logout(request):
     return JsonResponse(ok_json, safe=False)
 
 
-# @login_required
+@login_required
 @require_http_methods(['GET'])
 def user_search(request):
-    temporary_auth(request)
-
     limit = 10
     user = request.user
     username_prefix = request.GET.get('username')
@@ -78,18 +76,9 @@ def user_search(request):
     return JsonResponse(res, safe=False)
 
 
-def temporary_auth(request):
-    user = auth.authenticate(username='taifsalebame', password='vpLfieaESe0G')
-    # user = auth.authenticate(username='Grisha', password='222')
-    if user is not None and user.is_active:
-        auth.login(request, user)
-    return
-
-# @login_required
+@login_required
 @require_http_methods(['GET'])
 def my_chats(request):
-    temporary_auth(request)
-
     user = request.user
     chats = Chat.objects.filter(users=user).select_related()
 
@@ -111,14 +100,11 @@ def my_chats(request):
     return JsonResponse(res, safe=False)
 
 
-# @login_required
+@login_required
 @require_http_methods(['POST'])
 def chat_send(request, **kwargs):
-    temporary_auth(request)
-
     user = request.user
     chat_id = kwargs["id"]
-    # print(kwargs["id"])
     body_unicode = request.body.decode('utf-8')
 
     error_json = {"message": "Conversion error"}
@@ -129,7 +115,7 @@ def chat_send(request, **kwargs):
         return JsonResponse(error_json, safe=False, status=400)
 
     for message in messages:
-        if not message:
+        if not message.get("message") or len(message.get("message")) > 1000:    # больше тысячи знаков нельзя
             continue
         try:
             curr_message = Message.objects.create(text=message["message"], user=user, chat_id=chat_id)
@@ -144,11 +130,9 @@ def chat_send(request, **kwargs):
     return JsonResponse(ok_json, safe=False)
 
 
-# @login_required
+@login_required
 @require_http_methods(['GET'])
 def chat_messages(request, **kwargs):
-    temporary_auth(request)
-
     user = request.user
     chat_id = kwargs["id"]
 
