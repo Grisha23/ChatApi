@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     # 'django.contrib.staticfiles',
     'chat_app',
 ]
-#todo: csrf??
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
